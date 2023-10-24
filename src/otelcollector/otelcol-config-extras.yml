@@ -1,0 +1,28 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+# extra settings to be merged into OpenTelemetry Collector configuration
+# do not delete this file
+exporters:
+  otlp/elastic:
+    # !!! Elastic APM https endpoint WITHOUT the "https://" prefix
+    endpoint:
+    compression: none
+    headers:
+      Authorization:
+    tls: 
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/elastic, spanmetrics]
+    metrics:
+      receivers: [otlp, spanmetrics]
+      processors: [filter, batch]
+      exporters: [otlp/elastic]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/elastic]
